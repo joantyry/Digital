@@ -1,0 +1,18 @@
+
+---
+- name: Update system, set hostname, and configure timezone
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+
+    - name: Set system hostname
+      ansible.builtin.hostname:
+        name: devopstest.driirn.ca
+
+    - name: Set system timezone
+      ansible.builtin.timezone:
+        name: America/Toronto
