@@ -14,6 +14,7 @@ configuration includes the following:
 Toronto/EST (UTC-5)
 
 A. Prerequisites 
+
 1. Google Cloud Account – 
   (i) Create an account or use existing one - 
 https://cloud.google.com/products/compute?hl=en#create-your-first-vm
@@ -51,18 +52,22 @@ configurations.
 a.To customize the volumes, edit the boot-disk and docker-disk 
 sizes. 
 b.Edit the ssh firewall section <your-public-ip>  to match your 
-personal machine’s public ip address. https://whatismyipaddress.com to 
-returns your public ip address.
+personal machine’s public ip address. https://whatismyipaddress.com
+returns your public ip address. 
 
 2.cloud-init.sh – Formats and mounts /var/lib/docker with xfs, and 
 creates users.
 
+
 Steps to Deploy
+
 1.$terraform init
 2.$terraform plan
 3.$terraform apply
 
+
 Verify Deployment
+
 1.SSH into the VM -  $gcloud compute ssh deployuser@almalinux-9-vm 
 (This step automatically generates ssh public/private key pair.)
 2.Verify disk mounts -  $df -h
@@ -70,10 +75,18 @@ Verify Deployment
 4.Verify deployuser is a passwordless sudoer  - $sudo su && cat 
 /etc/sudoers
 5.Exit ($exit) twice to log out from the ssh login.
-6.Verify ssh firewall rule (should display the name of the firewall 
-rule in the list)- $ gcloud compute firewall-rules list
-7.Verify assigned vm instance public ip address (outputs the public 
+6. Verify assigned vm instance public ip address (outputs the public
 ip address) - $terraform output instance_ip
+7a.Verify ssh firewall rule (should display the name of the firewall 
+rule in the list)- $ gcloud compute firewall-rules list
+7b.To test the ssh firewall rule works - Switch to a separate 
+network, such as using a mobile hotspot, to simulate an external 
+connection. ssh into the vm instance $ssh -i <path-to-sshPrivateKey> deployuser@<vm-instance-public-ip>
+
+If the output is ssh: connect to host <vm-instance-public-ip> port 22: No route to host
+then, this confirms that the ssh firewall rule is limiting access to only 
+the specified IP address.
+ 
 
 C. Ansible
 
@@ -95,16 +108,16 @@ Deployment
 
 1.$ansible-playbook -i hosts.ini update-packages.yml
 
-Note:  This deployment will only work if you can SSH into the deployment 
+Note:  This deployment will only work if you can ssh into the deployment 
 user  account using the following command: - $ssh -i 
-~/.ssh/google_compute_engine deployuser@107.178.221.223   (ssh -I <path to 
-private key> deployuser@<public ip assigned to the vm-instance>)
+~/.ssh/google_compute_engine deployuser@107.178.221.223 (ssh -i 
+<path-to-sshPrivateKey> deployuser@<vm-instance-public-ip>)
 
 
 Verify Deployment
 
-1.SSH as deployuser - $ssh -i ~/.ssh/google_compute_engine 
-deployuser@107.178.221.223        
+1.SSH as deployuser - $ssh -i <path-to-sshPrivateKey> deployuser@<vm-instance-public-ip>        
 2.Hostname  verification - $hostname
 3.Timezone verification - $timedatectl
 4.rpm packages verification - $rpm -qa
+
