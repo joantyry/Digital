@@ -109,8 +109,7 @@ Deployment
 1.$ansible-playbook -i hosts.ini update-packages.yml
 
 Note:  This deployment will only work if you can ssh into the deployment 
-user  account using the following command: - $ssh -i 
-~/.ssh/google_compute_engine deployuser@107.178.221.223 (ssh -i 
+user  account using the following command: - $ssh -i ~/.ssh/google_compute_engine deployuser@107.178.221.223 (ssh -i 
 <path-to-sshPrivateKey> deployuser@<vm-instance-public-ip>)
 
 
